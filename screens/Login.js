@@ -1,9 +1,10 @@
 import React, { useState } from "react";
 import { getAuth } from "firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StyleSheet, View, Text, TextInput, Button } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { signIn } from "./../auth/login";
 import { useNavigation } from "@react-navigation/native";
+import { Button, Input, Text, Layout } from "@ui-kitten/components";
 import { app } from "./../config/firebase";
 
 const debug = true;
@@ -45,24 +46,26 @@ const LoginScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <Layout style={styles.container}>
       <Text style={styles.title}>Login</Text>
-      <TextInput
+      <Input
         style={styles.input}
         placeholder="Email"
         onChangeText={setEmail}
         value={email}
       />
-      <TextInput
+      <Input
         style={styles.input}
         placeholder="Password"
         secureTextEntry={true}
         onChangeText={setPassword}
         value={password}
       />
-      <Button style={styles.button} title="Login" onPress={handleLogin} />
-      {error && <Text style={{ color: "red" }}>{error}</Text>}
-    </View>
+      <Button style={styles.button} onPress={handleLogin}>
+        Submit
+      </Button>
+      {error && <Text style={styles.error}>{error}</Text>}
+    </Layout>
   );
 };
 
@@ -71,21 +74,21 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
     marginBottom: 16,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 8,
     margin: 8,
     width: "80%",
   },
   button: {
     margin: 8,
+  },
+  error: {
+    marginTop: 20,
+    color: "red",
   },
 });
 

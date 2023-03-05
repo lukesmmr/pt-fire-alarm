@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { StyleSheet, View, Text, TextInput, Button } from "react-native";
+import { StyleSheet } from "react-native";
+import { Layout, Button, Input, Text } from "@ui-kitten/components";
+
 import { createAccount } from "./../auth/create";
 
 const SignupScreen = () => {
@@ -33,24 +35,24 @@ const SignupScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <Layout style={styles.container}>
       <Text style={styles.title}>Sign up</Text>
-      <TextInput
+      <Input
         style={styles.input}
         placeholder="Email"
         value={email}
         onChangeText={setEmail}
       />
-      <TextInput
+      <Input
         style={styles.input}
         placeholder="Password"
         secureTextEntry={true}
         value={password}
         onChangeText={setPassword}
       />
-      <Button title="Sign up" onPress={handleSignup} />
-      {error && <Text style={{ color: "red" }}>{error}</Text>}
-    </View>
+      <Button style={styles.button} onPress={handleSignup}>Submit</Button>
+      {error && <Text style={styles.error}>{error}</Text>}
+    </Layout>
   );
 };
 
@@ -59,21 +61,21 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: "#fff",
   },
   title: {
     fontSize: 24,
     marginBottom: 16,
   },
   input: {
-    borderWidth: 1,
-    borderColor: "#ccc",
-    padding: 8,
     margin: 8,
     width: "80%",
   },
   button: {
     margin: 8,
+  },
+  error: {
+    marginTop: 20,
+    color: "red",
   },
 });
 

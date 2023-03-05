@@ -1,9 +1,15 @@
 import React, { useState, useEffect, useCallback } from "react";
-import { View, Text, Button, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import * as eva from "@eva-design/eva";
+import {
+  ApplicationProvider,
+  Layout,
+  Text,
+  Button,
+} from "@ui-kitten/components";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-
 import { StatusBar } from "expo-status-bar";
 import LoginScreen from "./screens/Login";
 import SignupScreen from "./screens/SignUp";
@@ -14,30 +20,31 @@ const debug = true;
 const Stack = createStackNavigator();
 
 const App = () => {
-
   useEffect(() => {
     checkAuthState();
   }, []);
 
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: "Fire Alarm" }}
-        />
-        <Stack.Screen
-          name="Login"
-          component={LoginScreen}
-          options={{ title: "Log in" }}
-        />
-        <Stack.Screen
-          name="Signup"
-          component={SignupScreen}
-          options={{ title: "Sign up" }}
-        />
-      </Stack.Navigator>
+      <ApplicationProvider {...eva} theme={eva.dark}>
+        <Stack.Navigator>
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ title: "Fire Alarm" }}
+          />
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ title: "Log in" }}
+          />
+          <Stack.Screen
+            name="Signup"
+            component={SignupScreen}
+            options={{ title: "Sign up" }}
+          />
+        </Stack.Navigator>
+      </ApplicationProvider>
     </NavigationContainer>
   );
 };
@@ -70,8 +77,8 @@ const HomeScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.appTitle}>Forest Fire Notifier</Text>
+    <Layout style={styles.container}>
+      <Text style={styles.appTitle}>Forest Fire Notifier 🔥</Text>
       <Text style={styles.appSubtitle}>
         Real-time notifications about fires in your specified area through your
         favourite channel
@@ -82,7 +89,9 @@ const HomeScreen = ({ navigation }) => {
           <Text>Token: {user?.token?.substring(0, 20) + "..."}</Text>
           <Text>You are logged in with {user.email}</Text>
           <Text>Uuid: {user.uid}</Text>
-          <Button title="Logout" onPress={handleLogout} />
+          <Button style={styles.logoutBtn} onPress={handleLogout}>
+            Logout
+          </Button>
         </View>
       ) : (
         <View>
@@ -90,23 +99,25 @@ const HomeScreen = ({ navigation }) => {
             title="Log in"
             onPress={() => navigation.navigate("Login")}
             style={styles.button}
-          />
+          >
+            Log in
+          </Button>
           <Button
-            title="Sign up"
             onPress={() => navigation.navigate("Signup")}
             style={styles.button}
-          />
+          >
+            Sign up
+          </Button>
         </View>
       )}
       <StatusBar style="auto" />
-    </View>
+    </Layout>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
     alignItems: "center",
     justifyContent: "center",
   },
@@ -115,7 +126,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   appTitle: {
-    //fontFamily: "oswald-regular",
     fontSize: 36,
     fontWeight: "bold",
     textTransform: "uppercase",
@@ -123,7 +133,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   appSubtitle: {
-    //fontFamily: "oswald-regular",
     fontSize: 18,
     marginBottom: 24,
     paddingHorizontal: 24,
@@ -131,19 +140,17 @@ const styles = StyleSheet.create({
     lineHeight: 28,
   },
   button: {
-    fontFamily: "oswald-regular",
-    backgroundColor: "linear-gradient(to bottom, #FFBABA, #FF7F7F)",
-    borderRadius: 4,
-    paddingVertical: 20,
-    paddingHorizontal: 10,
+    width: 200,
     marginVertical: 8,
+    textAlign: "center",
   },
   buttonText: {
-    fontFamily: "oswald-regular",
-    color: "#fff",
     fontWeight: "bold",
     fontSize: 18,
     textAlign: "center",
+  },
+  logoutBtn: {
+    marginTop: 30,
   },
 });
 
