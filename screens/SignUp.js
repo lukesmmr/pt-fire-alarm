@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { StyleSheet, View, Text, TextInput, Button } from "react-native";
 import { createAccount } from "./../auth/create";
 
@@ -11,9 +11,19 @@ const SignupScreen = () => {
   const handleSignup = () => {
     createAccount(email, password)
       .then((user) => {
-        console.log("User signed up:", user.stsTokenManager.accessToken);
+        console.log("User signed up:", user.email, user.uid);
         const token = user.stsTokenManager.accessToken;
-        AsyncStorage.setItem('auth_token', token);
+
+        const userData = {
+          token: token,
+          email: user.email,
+          uid: user.uid,
+        };
+
+        AsyncStorage.setItem("user_data", JSON.stringify(userData)).then(() => {
+          navigation.navigate("Home");
+        });
+
         setError(null);
       })
       .catch((error) => {

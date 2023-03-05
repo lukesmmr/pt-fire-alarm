@@ -1,20 +1,24 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+
 import { StatusBar } from "expo-status-bar";
 import LoginScreen from "./screens/Login";
 import SignupScreen from "./screens/SignUp";
 import { checkAuthState } from "./auth/checkAuth";
 import { logOut } from "./auth/logout";
+
 const debug = true;
 const Stack = createStackNavigator();
 
 const App = () => {
+
   useEffect(() => {
     checkAuthState();
   }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
@@ -39,37 +43,45 @@ const App = () => {
 };
 
 const HomeScreen = ({ navigation }) => {
-  const [authToken, setAuthToken] = useState(null);
-  const [userEmail, setUserEmail] = useState(null);
+  const [user, setUserData] = useState(null);
 
   useEffect(() => {
-    async function getAuthData() {
-      const token = await AsyncStorage.getItem("auth_token");
-      const userEmail = await AsyncStorage.getItem("user_email");
+    const getAuthData = async () => {
+      try {
+        const userDataStr = await AsyncStorage.getItem("user_data");
+        const userData = JSON.parse(userDataStr);
+        debug && console.log("::getAuthData::AsyncStorage.getItem");
+        setUserData(userData);
+      } catch (error) {
+        console.error("Error retrieving user data:", error);
+      }
+    };
 
-      debug && console.log("::App::token", token?.substring(0, 20) + "...");
-      debug && console.log("::App::userEmail", userEmail);
-
-      setAuthToken(token);
-      setUserEmail(userEmail);
-    }
     getAuthData();
-  }, []);
+
+    const unsubscribe = navigation.addListener("focus", getAuthData);
+    return unsubscribe;
+  }, [navigation]);
 
   const handleLogout = async () => {
     await logOut();
-    await AsyncStorage.removeItem("auth_token");
-    setAuthToken(null);
+    await AsyncStorage.removeItem("user_data");
+    setUserData(null);
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.appTitle}>Fire Alarm</Text>
+      <Text style={styles.appTitle}>Forest Fire Notifier</Text>
+      <Text style={styles.appSubtitle}>
+        Real-time notifications about fires in your specified area through your
+        favourite channel
+      </Text>
 
-      {authToken ? (
+      {user?.token ? (
         <View style={styles.currentUser}>
-          <Text>Token: {authToken.substring(0, 20) + "..."}</Text>
-          <Text>You are logged in with {userEmail}</Text>
+          <Text>Token: {user?.token?.substring(0, 20) + "..."}</Text>
+          <Text>You are logged in with {user.email}</Text>
+          <Text>Uuid: {user.uid}</Text>
           <Button title="Logout" onPress={handleLogout} />
         </View>
       ) : (
@@ -103,11 +115,23 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   appTitle: {
+    //fontFamily: "oswald-regular",
     fontSize: 36,
     fontWeight: "bold",
+    textTransform: "uppercase",
     marginBottom: 24,
+    textAlign: "center",
+  },
+  appSubtitle: {
+    //fontFamily: "oswald-regular",
+    fontSize: 18,
+    marginBottom: 24,
+    paddingHorizontal: 24,
+    textAlign: "center",
+    lineHeight: 28,
   },
   button: {
+    fontFamily: "oswald-regular",
     backgroundColor: "linear-gradient(to bottom, #FFBABA, #FF7F7F)",
     borderRadius: 4,
     paddingVertical: 20,
@@ -115,6 +139,7 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   buttonText: {
+    fontFamily: "oswald-regular",
     color: "#fff",
     fontWeight: "bold",
     fontSize: 18,

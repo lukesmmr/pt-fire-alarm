@@ -7,10 +7,14 @@ const debug = true;
 
 // Check if there is a stored token when the app is launched
 async function checkAuthState() {
-  const token = await AsyncStorage.getItem("auth_token");
+  const userDataStr = await AsyncStorage.getItem("user_data");
+  const userData = JSON.parse(userDataStr);
   debug &&
-    console.log("::checkAuthState::Token:", token?.substring(0, 20) + "...");
-  if (token) {
+    console.log(
+      "::checkAuthState::Token:",
+      userData?.token?.substring(0, 20) + "..."
+    );
+  if (userData?.token) {
     // Listen for changes to the user's authentication state
     onAuthStateChanged(
       auth,
@@ -33,7 +37,7 @@ async function checkAuthState() {
 // Log the user out and remove the stored token
 async function logout() {
   await auth.signOut();
-  await AsyncStorage.multiRemove(["auth_token", "user_email"]);
+  await AsyncStorage.removeItem("user_data");
 }
 
 export { checkAuthState, logout };
