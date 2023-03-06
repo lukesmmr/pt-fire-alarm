@@ -78,10 +78,9 @@ const HomeScreen = ({ navigation }) => {
 
   return (
     <Layout style={styles.container}>
-      <Text style={styles.appTitle}>Forest Fire Notifier 🔥</Text>
+      <Text style={styles.appTitle}>GeoNotify 🔥</Text>
       <Text style={styles.appSubtitle}>
-        Real-time notifications about fires in your specified area through your
-        favourite channel
+      Stay informed about fire emergencies with real-time notifications on Whatsapp or SMS, powered by the Fogos.pt API.
       </Text>
 
       {user?.token ? (
@@ -128,16 +127,15 @@ const styles = StyleSheet.create({
   appTitle: {
     fontSize: 36,
     fontWeight: "bold",
-    textTransform: "uppercase",
     marginBottom: 24,
     textAlign: "center",
   },
   appSubtitle: {
-    fontSize: 18,
+    fontSize: 16,
     marginBottom: 24,
     paddingHorizontal: 24,
     textAlign: "center",
-    lineHeight: 28,
+    lineHeight: 24,
   },
   button: {
     width: 200,
