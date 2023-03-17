@@ -13,14 +13,17 @@ const auth = getAuth(app);
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
+  const [sending, setSending] = useState(false);
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
   const navigation = useNavigation();
 
   const handleLogin = () => {
+    setSending(true);
     signIn(email, password)
       .then((user) => {
+        setSending(false);
         debug &&
           console.log(
             "::HandleLogin::User signed in:",
@@ -40,6 +43,7 @@ const LoginScreen = () => {
         });
       })
       .catch((error) => {
+        setSending(false);
         console.error("::Login::HandleLogin", error);
         setError(error.message);
       });
@@ -62,7 +66,7 @@ const LoginScreen = () => {
         value={password}
       />
       <Button style={styles.button} onPress={handleLogin}>
-        Submit
+        {sending ? <Text>Submitting...</Text> : <Text>Submit</Text>}
       </Button>
       {error && <Text style={styles.error}>{error}</Text>}
     </Layout>

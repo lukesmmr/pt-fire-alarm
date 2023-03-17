@@ -19,6 +19,19 @@ import { logOut } from "./auth/logout";
 const debug = true;
 const Stack = createStackNavigator();
 
+const stackScreenStyles = {
+  headerStyle: {
+    backgroundColor: "#232E47",
+    borderColor: "#232E47",
+    borderBottomWidth: 0,
+  },
+  headerTitleStyle: {
+    fontWeight: "bold",
+    textTransform: "uppercase",
+    color: "#fff",
+  },
+};
+
 const App = () => {
   useEffect(() => {
     checkAuthState();
@@ -31,17 +44,17 @@ const App = () => {
           <Stack.Screen
             name="Home"
             component={HomeScreen}
-            options={{ title: "Fire Alarm" }}
+            options={{ title: "Fire Alarm", ...stackScreenStyles }}
           />
           <Stack.Screen
             name="Login"
             component={LoginScreen}
-            options={{ title: "Log in" }}
+            options={{ title: "Log in", ...stackScreenStyles }}
           />
           <Stack.Screen
             name="Signup"
             component={SignupScreen}
-            options={{ title: "Sign up" }}
+            options={{ title: "Sign up", ...stackScreenStyles }}
           />
         </Stack.Navigator>
       </ApplicationProvider>
@@ -80,7 +93,8 @@ const HomeScreen = ({ navigation }) => {
     <Layout style={styles.container}>
       <Text style={styles.appTitle}>GeoNotify 🔥</Text>
       <Text style={styles.appSubtitle}>
-      Stay informed about fire emergencies with real-time notifications on Whatsapp or SMS, powered by the Fogos.pt API.
+        Stay informed about fire emergencies with real-time notifications on
+        Whatsapp or SMS, powered by the Fogos.pt API.
       </Text>
 
       {user?.token ? (
